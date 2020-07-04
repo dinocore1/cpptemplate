@@ -11,6 +11,10 @@ LOCAL_C_FILES = \
 
 OBJ = $(LOCAL_BUILD_DIR)/$(addsuffix .o,$(notdir $(SRC)))
 
+define include_flags
+$(addprefix -I,$(INCLUDES))
+endef
+
 define compile_c
 $(eval LOCAL_OBJS += $(OBJ))
 $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
@@ -44,6 +48,7 @@ endef
 define newmodule
 MODULE :=
 SRC_FILES :=
+INCLUDES :=
 LD_FLAGS :=
 C_FLAGS :=
 CPP_FLAGS :=
@@ -52,8 +57,8 @@ endef
 
 define module
 $(eval ALL_MODULES += $(MODULE))
-$(eval LOCAL_C_FLAGS := $(C_FLAGS))
-$(eval LOCAL_CXX_FLAGS := $(CXX_FLAGS))
+$(eval LOCAL_C_FLAGS := $(include_flags) $(C_FLAGS))
+$(eval LOCAL_CXX_FLAGS := $(include_flags) $(CXX_FLAGS))
 $(eval LOCAL_SRCS := $(LOCAL_C_FILES) $(LOCAL_CPP_FILES))
 $(eval LOCAL_BUILD_DIR := $(BUILD_DIR)/$(MODULE))
 $(eval LOCAL_OBJS := )

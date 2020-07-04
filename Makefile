@@ -13,6 +13,7 @@ include build.mk
 
 $(eval $(call newmodule))
 MODULE := hello
+INCLUDES := src
 SRC_FILES := hello.cc
 $(eval $(call build_exe))
 
