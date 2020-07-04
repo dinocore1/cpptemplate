@@ -23,5 +23,11 @@ SRC_FILES := kewl.cc
 
 $(eval $(call build_exe))
 
-$(info allmodules $(ALL_MODULES))
+MODULE := hello
+SRC_FILES := hello.cc
+
+$(eval $(call build_exe))
+
+
+$(info allmodules $(ALL_EXE))
 
