@@ -1,33 +1,19 @@
-.PHONY: all clean
+.PHONY: all clean info
 
-CXX := c++
+CC ?= cc
+CXX ?= c++
 BUILD_DIR := build
 
-all: $(ALL_EXE) $(ALL_LIBS) $(ALL_TESTS)
+all: 
 
-include makelib/definitions.mk
+clean:
+	rm -rf $(BUILD_DIR)
 
-MODULE := module1
-CPP_FLAGS :=
-LD_FLAGS := 
-SRC_FILES := \
-	src/file1.cxx \
-	src/file2.cxx \
-	src/file3.cc \
-	src/file4.c
+include build.mk
 
-$(eval $(call build_exe))
-
-MODULE := module2
-SRC_FILES := kewl.cc
-
-$(eval $(call build_exe))
-
+$(eval $(call newmodule))
 MODULE := hello
 SRC_FILES := hello.cc
-
 $(eval $(call build_exe))
 
-
-$(info allmodules $(ALL_EXE))
 

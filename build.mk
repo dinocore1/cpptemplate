@@ -1,4 +1,5 @@
 
+
 LOCAL_CPP_FILES = \
 	$(sort $(strip \
 	$(filter %.cpp,$(SRC_FILES)) \
@@ -9,10 +10,6 @@ LOCAL_C_FILES = \
 	$(sort $(strip $(filter %.c,$(SRC_FILES))))
 
 OBJ = $(LOCAL_BUILD_DIR)/$(addsuffix .o,$(notdir $(SRC)))
-
-define src_to_obj
-$(foreach file,$(LOCAL_SRCS),$(LOCAL_BUILD_DIR)/$(addsuffix .o,$(notdir $(file))))
-endef
 
 define compile_c
 $(eval LOCAL_OBJS += $(OBJ))
@@ -50,11 +47,13 @@ SRC_FILES :=
 LD_FLAGS :=
 C_FLAGS :=
 CPP_FLAGS :=
+CXX_FLAGS :=
 endef
 
 define module
 $(eval ALL_MODULES += $(MODULE))
 $(eval LOCAL_C_FLAGS := $(C_FLAGS))
+$(eval LOCAL_CXX_FLAGS := $(CXX_FLAGS))
 $(eval LOCAL_SRCS := $(LOCAL_C_FILES) $(LOCAL_CPP_FILES))
 $(eval LOCAL_BUILD_DIR := $(BUILD_DIR)/$(MODULE))
 $(eval LOCAL_OBJS := )
@@ -68,6 +67,7 @@ $(eval $(call module))
 $(eval LOCAL_ARTIFACT := $(LOCAL_BUILD_DIR)/$(MODULE))
 $(eval ALL_EXE += $(LOCAL_ARTIFACT))
 $(eval LOCAL_LD ?= $(CXX))
+$(eval LOCAL_LD_FLAGS := $(LD_FLAGS))
 $(eval $(call link))
 
 $(info module=$(MODULE))
