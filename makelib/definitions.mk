@@ -32,7 +32,7 @@ endef
 
 define link
 $(LOCAL_ARTIFACT): $(LOCAL_OBJS)
-	$(LOCAL_LD) $(LOCAL_LD_FLAGS) -o $@ $^
+	$(LOCAL_LD) $(LOCAL_LD_FLAGS) -o $(LOCAL_ARTIFACT) $(LOCAL_OBJS)
 
 endef
 
