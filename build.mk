@@ -20,7 +20,7 @@ $(foreach mod,$(LOCAL_LINK_DEPEND),$$($(mod)_ARTIFACT))
 endef
 
 define compile_c
-$(eval LOCAL_OBJS += $(OBJ))
+LOCAL_OBJS += $(OBJ)
 $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 	echo "building $(OBJ)"
 	$(CC) -c $(LOCAL_C_FLAGS) -o $(OBJ) $(SRC)
@@ -36,7 +36,7 @@ $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 endef
 
 define link
-$(LOCAL_ARTIFACT): $(LOCAL_OBJS) $(link_dependencies)
+$(LOCAL_ARTIFACT): $(LOCAL_OBJS) $(LOCAL_LINK_DEPEND)
 	$(LOCAL_LD) $(LOCAL_LD_FLAGS) -o $(LOCAL_ARTIFACT) $(LOCAL_OBJS)
 
 endef
@@ -45,8 +45,8 @@ define compile
 $(LOCAL_BUILD_DIR):
 	mkdir -p $(LOCAL_BUILD_DIR)
 
-$(foreach SRC,$(LOCAL_C_FILES),$(eval $(call compile_c)))
-$(foreach SRC,$(LOCAL_CPP_FILES),$(eval $(call compile_cpp)))
+$(foreach SRC,$(LOCAL_C_FILES),$(call compile_c))
+$(foreach SRC,$(LOCAL_CPP_FILES),$(call compile_cpp))
 endef
 
 define newmodule
@@ -62,42 +62,37 @@ COMPILE_DEPEND :=
 endef
 
 define module
-$(eval ALL_MODULES += $(MODULE))
-$(eval LOCAL_C_FLAGS := $(include_flags) $(C_FLAGS))
-$(eval LOCAL_CXX_FLAGS := $(include_flags) $(CXX_FLAGS))
-$(eval LOCAL_SRCS := $(LOCAL_C_FILES) $(LOCAL_CPP_FILES))
-$(eval LOCAL_BUILD_DIR := $(BUILD_DIR)/$(MODULE))
-$(eval LOCAL_LINK_DEPEND := $(LINK_DEPEND))
-$(eval LOCAL_OBJS := )
-
-$(call compile)
-
+ALL_MODULES += $(MODULE)
+LOCAL_C_FLAGS := $(include_flags) $(C_FLAGS)
+LOCAL_CXX_FLAGS := $(include_flags) $(CXX_FLAGS)
+LOCAL_LD ?= $(CXX)
+LOCAL_LD_FLAGS := $(LD_FLAGS)
+LOCAL_SRCS := $(LOCAL_C_FILES) $(LOCAL_CPP_FILES)
+LOCAL_BUILD_DIR := $(BUILD_DIR)/$(MODULE)
+LOCAL_LINK_DEPEND := $(LINK_DEPEND)
+LOCAL_OBJS := 
 endef
 
 define build_exe
 $(eval $(MODULE)_TYPE := exe)
 $(eval $(call module))
 $(eval LOCAL_ARTIFACT := $(LOCAL_BUILD_DIR)/$(MODULE))
-$(eval $(MODULE)_ARTIFACT := $(LOCAL_ARTIFACT))
 $(eval ALL_EXE += $(LOCAL_ARTIFACT))
-$(eval LOCAL_LD ?= $(CXX))
-$(eval LOCAL_LD_FLAGS := $(LD_FLAGS))
-$(eval $(call link))
+$(eval $(MODULE)_ARTIFACT := $(LOCAL_ARTIFACT))
+$(eval $(MODULE): $(LOCAL_ARTIFACT))
+$(call compile)
+$(call link)
 
-$(info module=$(MODULE))
-$(info src files=$(LOCAL_SRCS))
-$(info objs=$(LOCAL_OBJS))
-$(info ALL_EXE=$(ALL_EXE))
 endef
 
 define build_sharedlib
 $(eval $(MODULE)_TYPE := sharedlib)
 $(eval $(call module))
-$(eval LOCAL_ARTIFACT := $(LOCAL_BUILD_DIR)/$(MODULE))
+$(eval LOCAL_ARTIFACT := $(LOCAL_BUILD_DIR)/$(MODULE).so)
+$(eval ALL_LIBS += $(LOCAL_ARTIFACT))
 $(eval $(MODULE)_ARTIFACT := $(LOCAL_ARTIFACT))
-$(eval ALL_LIB += $(LOCAL_ARTIFACT))
-$(eval LOCAL_LD ?= $(CXX))
-$(eval LOCAL_LD_FLAGS := $(LD_FLAGS))
-$(eval $(call link))
+$(eval $(MODULE): $(LOCAL_ARTIFACT))
+$(call compile)
+$(call link)
 endef
 
