@@ -88,6 +88,9 @@ endef
 define build_sharedlib
 $(eval $(MODULE)_TYPE := sharedlib)
 $(eval $(call module))
+$(eval LOCAL_C_FLAGS += -fpic)
+$(eval LOCAL_CXX_FLAGS += -fpic)
+$(eval LOCAL_LD_FLAGS += -shared)
 $(eval LOCAL_ARTIFACT := $(LOCAL_BUILD_DIR)/$(MODULE).so)
 $(eval ALL_LIBS += $(LOCAL_ARTIFACT))
 $(eval $(MODULE)_ARTIFACT := $(LOCAL_ARTIFACT))
