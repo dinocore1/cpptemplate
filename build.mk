@@ -10,6 +10,7 @@ LOCAL_C_FILES = \
 	$(sort $(strip $(filter %.c,$(SRC_FILES))))
 
 OBJ = $(LOCAL_BUILD_DIR)/$(addsuffix .o,$(notdir $(SRC)))
+DEP = $(LOCAL_BUILD_DIR)/$(addsuffix .d,$(notdir $(SRC)))
 
 define include_flags
 $(addprefix -I,$(INCLUDES))
@@ -25,6 +26,7 @@ $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 	echo "building $(OBJ)"
 	$(CC) -c $(LOCAL_C_FLAGS) -o $(OBJ) $(SRC)
 
+-include $(DEP)
 endef
 
 define compile_cpp
@@ -33,6 +35,7 @@ $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 	echo "building $(OBJ)"
 	$(CXX) -c $(LOCAL_CXX_FLAGS) -o $(OBJ) $(SRC)
 
+-include $(DEP)
 endef
 
 define link
@@ -63,8 +66,8 @@ endef
 
 define module
 ALL_MODULES += $(MODULE)
-LOCAL_C_FLAGS := $(include_flags) $(C_FLAGS)
-LOCAL_CXX_FLAGS := $(include_flags) $(CXX_FLAGS)
+LOCAL_C_FLAGS := $(include_flags) -MMD $(C_FLAGS)
+LOCAL_CXX_FLAGS := $(include_flags) -MMD $(CXX_FLAGS)
 LOCAL_LD ?= $(CXX)
 LOCAL_LD_FLAGS := $(LD_FLAGS)
 LOCAL_SRCS := $(LOCAL_C_FILES) $(LOCAL_CPP_FILES)
