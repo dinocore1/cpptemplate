@@ -36,8 +36,8 @@ $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 endef
 
 define link
-$(LOCAL_ARTIFACT): $(LOCAL_OBJS) $(LOCAL_LINK_DEPEND)
-	$(LOCAL_LD) $(LOCAL_LD_FLAGS) -o $(LOCAL_ARTIFACT) $(LOCAL_OBJS)
+$(LOCAL_ARTIFACT): $(LOCAL_OBJS) $(link_dependencies)
+	$(LOCAL_LD) $(LOCAL_LD_FLAGS) -o $(LOCAL_ARTIFACT) $$^
 
 endef
 
