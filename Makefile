@@ -1,4 +1,4 @@
-.PHONY: all clean info
+.PHONY: all clean format
 
 CC ?= cc
 CXX ?= c++
@@ -23,6 +23,7 @@ SRC_FILES := hello.cc
 LINK_DEPEND := mylib
 $(eval $(call build_exe))
 
-
+format:
+	astyle -n --options=astyle.cfg $(FORMAT_FILES)
 
 modules: $(ALL_EXE) $(ALL_LIB)
