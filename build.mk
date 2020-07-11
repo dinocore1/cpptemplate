@@ -21,7 +21,7 @@ $(foreach mod,$(LOCAL_LINK_DEPEND),$$($(mod)_ARTIFACT))
 endef
 
 define compile_c
-LOCAL_OBJS += $(OBJ)
+$(eval LOCAL_OBJS += $(OBJ))
 $(OBJ): $(SRC) | $(LOCAL_BUILD_DIR)
 	echo "building $(OBJ)"
 	$(CC) -c $(LOCAL_C_FLAGS) -o $(OBJ) $(SRC)
